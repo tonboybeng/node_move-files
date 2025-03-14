@@ -5,6 +5,38 @@ const path = require('path');
 
 function moveFile(sourcePath, destinationPath) {
   try {
+    if (!fs.existsSync(sourcePath)) {
+      console.error(`Error: Source file: ${sourcePath} does not exist.`);
+
+      return;
+    }
+
+    if (!fs.existsSync(destinationPath)) {
+      let destinationFolder = '';
+
+      if (destinationPath.lastIndexOf('/') !== -1) {
+        destinationFolder = destinationPath.substr(
+          0,
+          destinationPath.lastIndexOf('/'),
+        );
+      } else if (destinationPath.lastIndexOf('\\') !== -1) {
+        destinationFolder = destinationPath.substr(
+          0,
+          destinationPath.lastIndexOf('\\'),
+        );
+      }
+
+      if (destinationFolder !== '') {
+        if (!fs.existsSync(destinationFolder)) {
+          console.error(
+            `Error: destination path: ${destinationPath} does not exist and destination folder: ${destinationFolder} does not exist.`,
+          );
+
+          return;
+        }
+      }
+    }
+
     if (
       fs.existsSync(destinationPath) &&
       fs.lstatSync(destinationPath).isDirectory()
